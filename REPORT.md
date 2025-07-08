@@ -141,7 +141,7 @@ nano .env.local
 
 Add the following variables to `frontend/.env.local`:
 
-\`\`\`env
+```env
 # API Configuration
 NEXT_PUBLIC_API_URL=http://localhost:5000
 
@@ -155,11 +155,11 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=firebase-project-id
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=project.appspot.com
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789
 NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789:web:abcdef123456
-\`\`\`
+```
 
 ### Step 3: Set Up Google Cloud Credentials
 
-\`\`\`bash
+```bash
 # Navigate back to chatbot directory
 cd ../chatbot
 
@@ -169,7 +169,7 @@ cp path/to/your/service-account-key.json key.json
 
 # Ensure the key file is in the chatbot directory
 ls -la key.json
-\`\`\`
+```
 
 ### Step 4: Set Up Neo4j Database
 
@@ -237,40 +237,40 @@ ls -la key.json
 #### Create Dockerfile
 Initiate Dockerfile for backend and frontend:
 
-\`\`\`bash
+```bash
 # init dockerfile on frontend and backend folder
 
 docker init
-\`\`\`
+```
 
 #### Production Deployment
 
 For production deployment:
 
-\`\`\`bash
+```bash
 # Build and start services
 docker-compose up --build -d
-\`\`\`
+```
 
 #### Verify Deployment
 
 1. **Check service status**:
-\`\`\`bash
+```bash
 docker-compose ps
-\`\`\`
+```
 
 2. **View logs**:
-\`\`\`bash
+```bash
 # All services
 docker-compose logs
 
 # Specific service
 docker-compose logs frontend
 docker-compose logs chatbot
-\`\`\`
+```
 
 3. **Test endpoints**:
-\`\`\`bash
+```bash
 # Frontend
 curl http://localhost:3000
 
@@ -279,7 +279,7 @@ curl http://localhost:5000/health
 
 # Backend status
 curl http://localhost:5000/status
-\`\`\`
+```
 
 ### Step 6: Access the Application
 
@@ -297,13 +297,13 @@ Once deployed successfully:
 **Problem**: Docker build fails with dependency errors
 
 **Solution**:
-\`\`\`bash
+```bash
 # Clear Docker cache
 docker system prune -a
 
 # Rebuild without cache
 docker-compose build --no-cache
-\`\`\`
+```
 
 #### 2. Neo4j Connection Issues
 
@@ -314,7 +314,7 @@ docker-compose build --no-cache
 - Check Neo4j instance is running and accessible
 - Ensure firewall allows connections on port 7687
 - Test connection manually:
-\`\`\`bash
+```bash
 docker-compose exec chatbot python -c "
 from neo4j import GraphDatabase
 driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', 'password'))
@@ -322,7 +322,7 @@ with driver.session() as session:
     result = session.run('RETURN 1')
     print('Connection successful')
 "
-\`\`\`
+```
 
 #### 3. Vertex AI Authentication Errors
 
@@ -333,13 +333,13 @@ with driver.session() as session:
 - Check `GOOGLE_CLOUD_PROJECT_ID` is correct
 - Ensure Vertex AI API is enabled in your GCP project
 - Test authentication:
-\`\`\`bash
+```bash
 docker-compose exec chatbot python -c "
 import os
 from google.cloud import aiplatform
 print('Credentials file exists:', os.path.exists('/app/key.json'))
 "
-\`\`\`
+```
 
 #### 4. Frontend-Backend Communication Issues
 
@@ -350,23 +350,23 @@ print('Credentials file exists:', os.path.exists('/app/key.json'))
 - Verify CORS configuration in backend
 - Ensure both services are on the same Docker network
 - Test API connectivity:
-\`\`\`bash
+```bash
 # From inside frontend container
 docker-compose exec frontend curl http://chatbot:5000/health
-\`\`\`
+```
 
 #### 5. Port Conflicts
 
 **Problem**: Ports 3000 or 5000 are already in use
 
 **Solutions**:
-\`\`\`bash
+```bash
 # Check what's using the ports
 lsof -i :3000
 lsof -i :5000
 
 # Kill processes or change ports in docker-compose.yml
-\`\`\`
+```
 
 #### 6. Environment Variable Issues
 
@@ -376,10 +376,10 @@ lsof -i :5000
 - Check `.env` file format (no spaces around =)
 - Verify file paths in docker-compose.yml
 - Restart containers after changing environment variables
-\`\`\`bash
+```bash
 docker-compose down
 docker-compose up --build
-\`\`\`
+```
 
 ## API Documentation
 
@@ -391,12 +391,12 @@ docker-compose up --build
 
 #### Chat Endpoints
 - `POST /api/chat` - Send message to AI chatbot
-  \`\`\`json
+  ```json
   {
     "message": "Recommend action movies like John Wick",
     "user_id": "optional_user_id"
   }
-  \`\`\`
+  ```
 
 #### Movie Endpoints
 - `GET /api/movies/{tmdbId}` - Get movie details by TMDB ID
