@@ -230,7 +230,7 @@ ls -la key.json
     `vector.dimensions`: 768,
     `vector.similarity_function`: 'cosine'
    }};
-   \`\`\`
+   ```
 
 ### Step 5: Build and Deploy with Docker
 
