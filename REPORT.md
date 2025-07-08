@@ -1,4 +1,4 @@
-# Movie Recommendation System - Project Report
+# Movie Recommendation Web - Project Report
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
