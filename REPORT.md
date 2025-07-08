@@ -2,12 +2,11 @@
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
-5. [Prerequisites](#prerequisites)
-6. [Step-by-Step Deployment Guide](#step-by-step-deployment-guide)
-7. [Troubleshooting](#troubleshooting)
-8. [API Documentation](#api-documentation)
-9. [Production Considerations](#production-considerations)
-10. [Contributing](#contributing)
+2. [Prerequisites](#prerequisites)
+3. [Step-by-Step Deployment Guide](#step-by-step-deployment-guide)
+4. [Troubleshooting](#troubleshooting)
+5. [API Documentation](#api-documentation)
+
 
 ## Project Overview
 
@@ -80,11 +79,8 @@ Before deploying the application, ensure the following:
 
 \`\`\`bash
 # Clone the repository
-git clone https://github.com/adhitaazizi/v0-frontend.git
-cd v0-frontend
-
-# Switch to the appropriate branch
-git checkout new
+git clone https://github.com/adhitaazizi/movie-recommendation.git
+cd movie-recommendation
 \`\`\`
 
 ### Step 2: Set Up Environment Variables
@@ -120,8 +116,8 @@ GOOGLE_APPLICATION_CREDENTIALS=/app/key.json
 # TMDB API Configuration
 TMDB_API_KEY=your_tmdb_api_key
 
-# OpenAI Configuration (if using OpenAI instead of Vertex AI)
-OPENAI_API_KEY=your_openai_api_key
+# LLM Configuration (Using Llama 4 on Fireworks AI)
+FIREWORKS_AI_API_KEY=your_openai_api_key
 
 # Flask Configuration
 FLASK_ENV=production
@@ -238,19 +234,13 @@ ls -la key.json
 
 ### Step 5: Build and Deploy with Docker
 
-#### Development Deployment
-
-For development with hot reloading:
+#### Create Dockerfile
+Initiate Dockerfile for backend and frontend:
 
 \`\`\`bash
-# Navigate to project root
-cd ..
+# init dockerfile on frontend and backend folder
 
-# Build and start services
-docker-compose -f docker-compose.dev.yml up --build
-
-# Or run in detached mode
-docker-compose -f docker-compose.dev.yml up --build -d
+docker init
 \`\`\`
 
 #### Production Deployment
@@ -259,9 +249,6 @@ For production deployment:
 
 \`\`\`bash
 # Build and start services
-docker-compose up --build
-
-# Or run in detached mode
 docker-compose up --build -d
 \`\`\`
 
@@ -303,9 +290,7 @@ Once deployed successfully:
 - **Health Check**: http://localhost:5000/health
 - **API Status**: http://localhost:5000/status
 
-## Troubleshooting
-
-### Common Issues and Solutions
+## Troubleshooting Encountered
 
 #### 1. Container Build Failures
 
@@ -396,43 +381,6 @@ docker-compose down
 docker-compose up --build
 \`\`\`
 
-### Debugging Commands
-
-\`\`\`bash
-# Enter running container
-docker-compose exec frontend sh
-docker-compose exec chatbot bash
-
-# View real-time logs
-docker-compose logs -f chatbot
-
-# Restart specific service
-docker-compose restart chatbot
-
-# Check container resource usage
-docker stats
-
-# Inspect container configuration
-docker-compose config
-
-# Check network connectivity
-docker-compose exec frontend ping chatbot
-\`\`\`
-
-### Log Analysis
-
-\`\`\`bash
-# Check application logs
-docker-compose logs chatbot | grep ERROR
-docker-compose logs frontend | grep error
-
-# Check system logs
-docker-compose logs chatbot | tail -100
-
-# Export logs to file
-docker-compose logs > application.log
-\`\`\`
-
 ## API Documentation
 
 ### Backend Endpoints
@@ -473,122 +421,4 @@ docker-compose logs > application.log
 - `/mylibrary` - User's movie library
 - `/recommended` - Personalized recommendations
 
-## Production Considerations
-
-### Security
-
-1. **Environment Variables**: Use Docker secrets or external secret management
-\`\`\`yaml
-# docker-compose.yml
-secrets:
-  neo4j_password:
-    file: ./secrets/neo4j_password.txt
-\`\`\`
-
-2. **HTTPS**: Configure SSL/TLS certificates
-\`\`\`yaml
-# Add nginx reverse proxy
-nginx:
-  image: nginx:alpine
-  ports:
-    - "443:443"
-  volumes:
-    - ./nginx.conf:/etc/nginx/nginx.conf
-    - ./ssl:/etc/ssl
-\`\`\`
-
-3. **Firewall**: Restrict access to necessary ports only
-4. **Authentication**: Implement proper API authentication and rate limiting
-
-### Performance
-
-1. **Caching**: Implement Redis for caching frequent queries
-\`\`\`yaml
-redis:
-  image: redis:alpine
-  ports:
-    - "6379:6379"
-\`\`\`
-
-2. **Load Balancing**: Use Nginx or cloud load balancers
-3. **Database Optimization**: Optimize Neo4j queries and indexes
-4. **CDN**: Use CDN for static assets
-
-### Monitoring
-
-1. **Logging**: Centralized logging with ELK stack
-\`\`\`yaml
-elasticsearch:
-  image: elasticsearch:7.14.0
-logstash:
-  image: logstash:7.14.0
-kibana:
-  image: kibana:7.14.0
-\`\`\`
-
-2. **Metrics**: Application and infrastructure monitoring
-3. **Health Checks**: Comprehensive health check endpoints
-4. **Alerting**: Set up alerts for critical failures
-
-### Scaling
-
-1. **Horizontal Scaling**: Multiple container instances
-\`\`\`yaml
-chatbot:
-  deploy:
-    replicas: 3
-\`\`\`
-
-2. **Database Scaling**: Neo4j clustering for high availability
-3. **Microservices**: Split backend into smaller services
-4. **Container Orchestration**: Consider Kubernetes for large deployments
-
-## Contributing
-
-### Development Setup
-
-1. **Fork the repository**
-2. **Create feature branch**: `git checkout -b feature/new-feature`
-3. **Make changes and test locally**
-4. **Submit pull request**
-
-### Code Standards
-
-- **Frontend**: ESLint + Prettier configuration
-- **Backend**: PEP 8 Python style guide
-- **Commits**: Conventional commit messages
-- **Testing**: Unit tests for critical functions
-
-### Development Workflow
-
-\`\`\`bash
-# Start development environment
-docker-compose -f docker-compose.dev.yml up
-
-# Run tests
-docker-compose exec chatbot python -m pytest
-docker-compose exec frontend npm test
-
-# Code formatting
-docker-compose exec chatbot black .
-docker-compose exec frontend npm run lint
-\`\`\`
-
-## License
-
-This project is licensed under the MIT License. See LICENSE file for details.
-
-## Support
-
-For issues and questions:
-
-1. **GitHub Issues**: Create an issue in the repository
-2. **Documentation**: Check this README and inline code comments
-3. **Community**: Join discussions in GitHub Discussions
-
----
-
-**Last Updated**: January 2025
-**Version**: 1.0.0
-**Authors**: Development Team
-**Contact**: [Your contact information]
+The screenshots of the web is on the [screenshots](./screenshots/)

@@ -1,8 +1,6 @@
 from neo4j import GraphDatabase
 
-class Neo4jDatabase:
-    """Class to handle Neo4j database operations."""
-    
+class Neo4jDatabase:    
     def __init__(self, uri, username, password):
         """Initialize Neo4j connection."""
         self.driver = GraphDatabase.driver(uri, auth=(username, password))
@@ -12,13 +10,6 @@ class Neo4jDatabase:
         self.driver.close()
     
     def get_movie_recommendations_by_vector(self, user_embedding, top_k=5):
-        """
-        Get movie recommendations from Neo4j using vector similarity search.
-        
-        Args:
-            user_embedding: Vector representation of user query
-            top_k: Number of recommendations to return
-        """
         with self.driver.session() as session:
             # Vector similarity search query using the vector index
             query = """
@@ -57,6 +48,7 @@ class Neo4jDatabase:
             return recommendations
 
 
+# show the schema of the knowledge base
 def get_ontology_from_neo4j(driver):
     with driver.session() as session:
         result = session.run("CALL db.schema.nodeTypeProperties()")
