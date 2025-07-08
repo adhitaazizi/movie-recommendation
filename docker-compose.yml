@@ -20,6 +20,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
+    volumes:
+      - ~/.config/gcloud/application_default_credentials.json:/app/key.json
     env_file:
       - ./chatbot/.env
     environment:
@@ -34,6 +36,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    
 
 networks:
   app-network:

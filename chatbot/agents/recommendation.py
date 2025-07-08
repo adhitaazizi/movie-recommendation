@@ -38,7 +38,7 @@ class KnowledgeGraphAgent:
                 lines = [line for line in lines if not line.strip().startswith("```")]
                 generated_query = "\n".join(lines).strip()
             
-            print("Generated Cypher:\n", generated_query)
+            # print("Generated Cypher:\n", generated_query)
 
             with self.neo4j.driver.session() as session:
                 result = session.run(generated_query)

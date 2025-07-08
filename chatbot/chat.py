@@ -12,8 +12,9 @@ agent = KnowledgeGraphAgent(
 )
 
 # Process the message
-response_text = llm_generate("Give me movies like jurassic park")
+response_text, movie_ids = agent.process_query("Give me movies like jurassic park")
 
 print(response_text)
+print(movie_ids)
 
 agent.close()

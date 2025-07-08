@@ -11,36 +11,6 @@ class Neo4jDatabase:
         """Close the driver connection."""
         self.driver.close()
     
-    def setup_vector_index(self):
-        """Set up or load a vector index in Neo4j for the movie embeddings."""
-        with self.driver.session() as session:
-            try:
-                # Check if the vector index already exists
-                check_query = """
-                SHOW VECTOR INDEXES YIELD name
-                WHERE name = 'overview_embeddings'
-                RETURN name
-                """
-                result = session.run(check_query)
-                existing_index = result.single()
-
-                if existing_index:
-                    print("Vector index 'overview_embeddings' already exists. No need to create a new one.")
-                else:
-                    # Create a new vector index if it doesn't exist
-                    print("Creating new vector index")
-                    query_index = """
-                    CREATE VECTOR INDEX overview_embeddings
-                    FOR (m:Movie) ON (m.embedding)
-                    OPTIONS {indexConfig: {
-                        `vector.dimensions`: 768,  
-                        `vector.similarity_function`: 'cosine'}}
-                    """
-                    session.run(query_index)
-                    print("Vector index created successfully")
-            except Exception as e:
-                print(f"Error while setting up vector index: {e}")
-    
     def get_movie_recommendations_by_vector(self, user_embedding, top_k=5):
         """
         Get movie recommendations from Neo4j using vector similarity search.
@@ -53,7 +23,7 @@ class Neo4jDatabase:
             # Vector similarity search query using the vector index
             query = """
             CALL db.index.vector.queryNodes(
-              'overview_embeddings',
+              'movie_embeddings',
               $top_k,
               $embedding
             ) YIELD node, score
