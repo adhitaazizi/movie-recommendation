@@ -77,11 +77,11 @@ Before deploying the application, ensure the following:
 
 ### Step 1: Clone the Repository
 
-\`\`\`bash
+```bash
 # Clone the repository
 git clone https://github.com/adhitaazizi/movie-recommendation.git
 cd movie-recommendation
-\`\`\`
+```
 
 ### Step 2: Set Up Environment Variables
 
@@ -89,7 +89,7 @@ cd movie-recommendation
 
 Create `chatbot/.env` file:
 
-\`\`\`bash
+```bash
 # Navigate to chatbot directory
 cd chatbot
 
@@ -98,11 +98,11 @@ cp .env.example .env
 
 # Edit the .env file with your credentials
 nano .env
-\`\`\`
+```
 
 Add the following variables to `chatbot/.env`:
 
-\`\`\`env
+```env
 # Neo4j Database Configuration
 NEO4J_URI=bolt://localhost:7687
 NEO4J_USERNAME=neo4j
@@ -122,13 +122,13 @@ FIREWORKS_AI_API_KEY=your_openai_api_key
 # Flask Configuration
 FLASK_ENV=production
 PORT=5000
-\`\`\`
+```
 
 #### Frontend Environment
 
 Create `frontend/.env.local` file:
 
-\`\`\`bash
+```bash
 # Navigate to frontend directory
 cd ../frontend
 
@@ -137,7 +137,7 @@ touch .env.local
 
 # Edit the file
 nano .env.local
-\`\`\`
+```
 
 Add the following variables to `frontend/.env.local`:
 
