@@ -3,20 +3,22 @@
 
 A movie recommendation application that combines Neo4j's graph database capabilities with Google Cloud's Vertex AI to deliver intelligent, natural language-based movie recommendations. The system performs semantic vector search using Vertex AI embeddings, then leverages large language models to generate and execute Cypher queries on the Neo4j knowledge graph, enabling multi-hop reasoning and contextual recommendations powered by the GraphRAG pattern.
 
-## 📝 Blog Post
 
-Check out the detailed explanation of this project in the blog post: [Building an Intelligent Movie Search with Neo4j and Vertex AI](https://sidagarwal04.medium.com/building-an-intelligent-movie-search-with-neo4j-and-vertex-ai-a38c75f79cf7)
 
 ## 🚀 Overview
-This project demonstrates how to build an GenAI-powered movie recommendation engine using the GraphRAG pattern by integrating:
+This project built a knowledge-base AI agent leveraged the following:
 
 - **Neo4j**:  A graph database for storing movie data, knowledge graph relationships, and vector embeddings
 - **Google Vertex AI**: For generating semantic embeddings (text-embedding-005) and leveraging Gemini for natural language understanding and Cypher generation
-- **Gradio**: To build an intuitive web interface for interactive recommendations
+- **Meta Llama 4**: Large language model for natural language understanding and Cypher generation
+- **Langchain**: Large language model for natural language understanding and Cypher generation
+- **Dspy**: Large language model for natural language understanding and Cypher generation
 
 The system performs semantic search using vector embeddings to retrieve relevant movie context, then dynamically generates Cypher queries using Gemini based on this context and the Neo4j knowledge graph schema. These Cypher queries are executed to fetch precise results, which are then summarized conversationally by Gemini — enabling a powerful, explainable, and context-aware movie recommendation experience.
 
-## 🎬 [Live Demo](https://movies-reco-258362460261.us-central1.run.app/)
+## 📝 Knowledge-Base 
+
+The knowledge-base data is from [The Movie Dataset](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset) and the graph model are based on [Building an Intelligent Movie Search with Neo4j and Vertex AI](https://sidagarwal04.medium.com/building-an-intelligent-movie-search-with-neo4j-and-vertex-ai-a38c75f79cf7)
 
 ## 🧩 How It Works
 
