@@ -1,18 +1,21 @@
-from ..knowledge.base import Neo4jDatabase, get_ontology_from_neo4j
-from ..models.basic import llm_generate
+from .knowledge_base import Neo4jDatabase, get_ontology_from_neo4j
+from .basic import llm_generate
 from .prompts import cypher_generation_prompt, summarize_results_prompt
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from vertexai.language_models import TextEmbeddingModel
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class KnowledgeGraphAgent:    
     def __init__(self, neo4j_uri, neo4j_user, neo4j_password):
         """Initialize the application with Neo4j and Gemini services."""
         self.neo4j = Neo4jDatabase(neo4j_uri, neo4j_user, neo4j_password)
-        self.vector_service = GoogleGenerativeAIEmbeddings(model="models/text-embedding-005")
+        self.vector_service = TextEmbeddingModel.from_pretrained("text-embedding-005")
     
     def process_query(self, user_input):
         movie_ids = []
         try:
-            query_embedding = self.vector_service.embed_query(user_input)
+            query_embedding = self.vector_service.get_embeddings([user_input])[0].values
             vector_results = self.neo4j.get_movie_recommendations_by_vector(query_embedding, top_k=5)
             
             if not vector_results:
@@ -46,7 +49,7 @@ class KnowledgeGraphAgent:
             return summary, movie_ids
 
         except Exception as e:
-            return f"Error processing query: {str(e)}"
+            return f"Error processing query: {str(e)}", ""
     
     def close(self):
         """Close all connections."""

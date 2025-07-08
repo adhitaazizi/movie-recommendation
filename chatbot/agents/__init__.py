@@ -1,3 +1,3 @@
-from agents.recommendation import KnowledgeGraphAgent
+from .recommendation import KnowledgeGraphAgent
 
 __all__ = ["KnowledgeGraphAgent"]
