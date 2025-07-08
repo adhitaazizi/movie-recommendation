@@ -9,8 +9,16 @@ export async function POST(request) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 })
     }
 
+    // Use different URLs based on environment
+    const backendUrl =
+      process.env.NODE_ENV === "production"
+        ? "http://chatbot:5000/api/chat" // Docker service name
+        : "http://localhost:5000/api/chat" // Local development
+
+    console.log(`Attempting to connect to: ${backendUrl}`)
+
     // Forward the request to the Flask backend
-    const response = await fetch('http://localhost:5000/api/chat', {
+    const response = await fetch(backendUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -21,6 +29,8 @@ export async function POST(request) {
         userId: userId || "anonymous",
         timestamp: new Date().toISOString(),
       }),
+      // Add timeout for better error handling
+      signal: AbortSignal.timeout(30000), // 30 second timeout
     })
 
     if (!response.ok) {
@@ -45,35 +55,52 @@ export async function POST(request) {
   } catch (error) {
     console.error("Chat API error:", error)
 
-    // Fallback response based on message content for development
-    const messageContent = request.body?.message?.toLowerCase() || ""
-
-    let fallbackResponse = {
-      text: "I'm sorry, I'm having trouble connecting to the chatbot service right now. Here's what I can suggest:",
-      movieIds: [],
-      error: "Service temporarily unavailable",
+    // Get the message content for fallback responses
+    let messageContent = ""
+    try {
+      const requestBody = await request.clone().json()
+      messageContent = requestBody.message?.toLowerCase() || ""
+    } catch (e) {
+      console.warn("Could not parse request body for fallback")
     }
 
-    // Provide some basic fallback recommendations
+    let fallbackResponse = {
+      text: "I'm sorry, I'm having trouble connecting to the chatbot service right now. Here are some popular movies you might enjoy:",
+      movieIds: [550, 155, 13, 24428, 27205], // Mix of popular movies
+      error: "Service temporarily unavailable",
+      fallback: true,
+    }
+
+    // Provide contextual fallback recommendations
     if (messageContent.includes("action") || messageContent.includes("adventure")) {
       fallbackResponse = {
         text: "I'm having connection issues, but here are some popular action movies:",
-        movieIds: [550, 155, 13, 24428, 27205], // Fight Club, Dark Knight, Forrest Gump, Avengers, Inception
+        movieIds: [550, 155, 24428, 27205, 99861], // Fight Club, Dark Knight, Avengers, Inception, Avengers: Age of Ultron
+        fallback: true,
       }
     } else if (messageContent.includes("comedy") || messageContent.includes("funny")) {
       fallbackResponse = {
         text: "Connection issues, but here are some great comedies:",
-        movieIds: [19404, 105, 9806, 11036, 13], // Deadpool, Back to the Future, The Incredibles, The Grand Budapest Hotel, Finding Nemo
+        movieIds: [19404, 105, 9806, 11036, 862], // Deadpool, Back to the Future, The Incredibles, The Grand Budapest Hotel, Toy Story
+        fallback: true,
       }
     } else if (messageContent.includes("horror") || messageContent.includes("scary")) {
       fallbackResponse = {
         text: "Can't connect right now, but here are some horror classics:",
-        movieIds: [694, 539, 1724, 4232, 10144], // The Shining, Psycho, The Exorcist, Alien, The Ring
+        movieIds: [694, 539, 1724, 348, 10144], // The Shining, Psycho, The Exorcist, Alien, The Ring
+        fallback: true,
       }
     } else if (messageContent.includes("romance") || messageContent.includes("love")) {
       fallbackResponse = {
         text: "Service issues, but here are some romantic movies:",
-        movieIds: [19404, 11036, 597, 10681, 597], // Titanic, Casablanca, The Notebook, WALL-E, Titanic
+        movieIds: [597, 11036, 10681, 194, 1585], // Titanic, Casablanca, WALL-E, The Notebook, It's a Wonderful Life
+        fallback: true,
+      }
+    } else if (messageContent.includes("drama")) {
+      fallbackResponse = {
+        text: "Having connection problems, but here are some acclaimed dramas:",
+        movieIds: [278, 238, 424, 389, 129], // The Shawshank Redemption, The Godfather, Schindler's List, 12 Angry Men, Spirited Away
+        fallback: true,
       }
     }
 
@@ -83,8 +110,12 @@ export async function POST(request) {
 
 // Handle GET requests for testing
 export async function GET() {
+  const backendUrl = process.env.NODE_ENV === "production" ? "http://chatbot:5000" : "http://localhost:5000"
+
   return NextResponse.json({
     message: "Chat API is running",
+    environment: process.env.NODE_ENV || "development",
+    backendUrl: backendUrl,
     endpoints: {
       POST: "/api/chat - Send a chat message",
     },

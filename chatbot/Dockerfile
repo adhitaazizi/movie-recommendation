@@ -29,6 +29,9 @@ COPY . .
 RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /app
 USER appuser
 
+# Set the environment variable to point to where the key will be
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/key.json
+
 # Expose port
 EXPOSE 5000
 

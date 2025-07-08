@@ -13,7 +13,7 @@ def llm_generate(prompt):
     )
 
     response = llm.chat.completions.create(
-        model="accounts/fireworks/models/llama-v3-8b-instruct",
+        model="accounts/fireworks/models/llama4-maverick-instruct-basic",
         messages=[{
             "role": "user",
             "content": prompt,

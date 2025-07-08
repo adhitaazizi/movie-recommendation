@@ -3,7 +3,8 @@ from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 import logging
-from .agents.recommendation import KnowledgeGraphAgent
+from agents.recommendation import KnowledgeGraphAgent
+from agents.basic import llm_generate
 
 # Load environment variables from .env file
 load_dotenv()
@@ -66,26 +67,28 @@ def chat():
         logger.info(f"Processing message from user {user_id}: {message}")
         
         # Initialize the agent
-        agent = KnowledgeGraphAgent(
-            os.getenv('NEO4J_URI'),
-            os.getenv('NEO4J_USER'),
-            os.getenv('NEO4J_PASSWORD')
-        )
+        # agent = KnowledgeGraphAgent(
+        #     os.getenv('NEO4J_URI'),
+        #     os.getenv('NEO4J_USER'),
+        #     os.getenv('NEO4J_PASSWORD')
+        # )
         
         # Process the message
-        response_text, movie_ids = agent.process_query(message)
+        # response_text, movie_ids = agent.process_query(message)
+
+        response = llm_generate(message)
         
         # Prepare response
-        if movie_ids:
-            response = {
-                "text": response_text,
-                "movieIds": movie_ids
-            }
-        else:
-            response = {
-                "text": response_text,
-                "movieIds": []
-            }
+        # if movie_ids:
+        #     response = {
+        #         "text": response_text,
+        #         "movieIds": movie_ids
+        #     }
+        # else:
+        #     response = {
+        #         "text": response_text,
+        #         "movieIds": []
+        #     }
         
         logger.info(f"Sending response: {response}")
         return jsonify(response), 200

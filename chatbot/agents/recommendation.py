@@ -16,6 +16,7 @@ class KnowledgeGraphAgent:
         movie_ids = []
         try:
             query_embedding = self.vector_service.get_embeddings([user_input])[0].values
+            print(len(query_embedding))
             vector_results = self.neo4j.get_movie_recommendations_by_vector(query_embedding, top_k=5)
             
             if not vector_results:

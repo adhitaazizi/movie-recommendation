@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 
 # Install dependencies
 COPY package*.json ./
+# Before your npm install command
+RUN npm cache clean --force
 RUN npm install
 
 # Copy source code
