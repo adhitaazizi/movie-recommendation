@@ -2,7 +2,7 @@
 
 Report is in the [report](./REPORT.md)
 
-Defends on frontend, the app design is commond so I use LLM to create the TMDB frontend and plan to change the color later though some aspects are completely different such as the movie and search pages. Furthermore I implement a chatbot for movie qa.
+Defends on frontend, the app design is common so I use LLM to create the TMDB frontend and plan to change the color later though some aspects are completely different such as the movie and search pages. Furthermore I implement a chatbot for movie qa.
 
 For the backend, the data is from [the movies dataset](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset) which is outdated for 8 years so the qa chatbot would not recognize the past 8 years movies from now. 
 
